@@ -78,4 +78,10 @@ void rootfuncgenerate(Int_t nEvents, Int_t nTracks, Double_t v2)
   
   // Save the canvas as a picture
   c1->SaveAs("v2_rootfunc.jpg");
+
+  // print to terminal
+  cout << "nTracks " << nTracks << endl;
+  for(Int_t i = 0; i < nTracks; i++) {
+    cout << i << " : " << phi[i] << endl;
+  }
 }
