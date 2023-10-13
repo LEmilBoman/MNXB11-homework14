@@ -29,11 +29,12 @@ void rootfuncgenerate(Int_t nEvents, Double_t v2)
   cout << "Generating " << nEvents << " events" << endl << endl;
 
   // create histogram that we will fill with random values
-  TH1D* hPhi = new TH1D("hPhi", "ROOT func generated sin(x) distribution; x; Counts", 
-			100, 0, TMath::Pi());
+  TH1D* hPhi = new TH1D("hPhi", "ROOT func generated phi distribution; x; Counts", 
+			100, 0, 6);
 
   // Define the function we want to generate
-  TF1* sinFunc = new TF1("sinFunc", "sin(x)", 0, TMath::Pi());
+  TF1* phiFunc = new TF1("phiFunc", "1+2*[0]*cos(2*x)", 0, 6);
+  phiFunc->SetParameter(0,v2);
   
   // make a loop for the number of events
   for(Int_t n = 0; n < nEvents; n++) {
@@ -41,8 +42,8 @@ void rootfuncgenerate(Int_t nEvents, Double_t v2)
     if((n+1)%1000==0)
       cout << "event " << n+1 << endl;
     
-    // fill our sin dist histogram
-    hPhi->Fill(sinFunc->GetRandom()); 
+    // fill our phi dist histogram
+    hPhi->Fill(phiFunc->GetRandom()); 
   }
   
   // Set ROOT drawing styles
@@ -50,7 +51,7 @@ void rootfuncgenerate(Int_t nEvents, Double_t v2)
   gStyle->SetOptFit(1111);
 
   // create canvas for hPhi
-  TCanvas* c1 = new TCanvas("c1", "sin canvas", 900, 600);
+  TCanvas* c1 = new TCanvas("c1", "phi canvas", 900, 600);
   hPhi->SetMinimum(0);
   hPhi->Draw();
   
