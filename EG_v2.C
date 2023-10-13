@@ -20,11 +20,11 @@ using namespace std;
 #include <TMath.h>   // math functions
 #include <TCanvas.h> // canvas object
 
-void rootfuncgenerate(Int_t nEvents, Double_t v2); // ROOT method (a bit dangerous since we don't know exactly what happens!)
+void rootfuncgenerate(Int_t nEvents, Int_t nTracks, Double_t v2); // ROOT method (a bit dangerous since we don't know exactly what happens!)
 
 
 //________________________________________________________________________
-void rootfuncgenerate(Int_t nEvents, Double_t v2) 
+void rootfuncgenerate(Int_t nEvents, Int_t nTracks, Double_t v2) 
 {
   cout << "Generating " << nEvents << " events" << endl << endl;
 
@@ -35,7 +35,20 @@ void rootfuncgenerate(Int_t nEvents, Double_t v2)
   // Define the function we want to generate
   TF1* phiFunc = new TF1("phiFunc", "1+2*[0]*cos(2*x)", 0, 6);
   phiFunc->SetParameter(0,v2);
+
+  Double_t phi[nTracks]; //array for storing phi angles.
+
+  //generate nTracks phi angles
+  for (Int_t nt = 0; nt < nTracks; nt++) {
+    // generate random numbers to fill the array
+    phi[nt] = phiFunc->GetRandom();
+  }
+
+  for(Int_t i = 0; i < nTracks; i++) {
+    hPhi->Fill(phi[i]);
+  }
   
+  /*old loop. Keep for completeness
   // make a loop for the number of events
   for(Int_t n = 0; n < nEvents; n++) {
     
@@ -44,7 +57,7 @@ void rootfuncgenerate(Int_t nEvents, Double_t v2)
     
     // fill our phi dist histogram
     hPhi->Fill(phiFunc->GetRandom()); 
-  }
+  }*/
   
   // Set ROOT drawing styles
   gStyle->SetOptStat(1111);
