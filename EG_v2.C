@@ -57,8 +57,9 @@ void rootfuncgenerate(Int_t nEvents, Double_t v2)
   
   // create 1d function that we will use to fit our generated data to ensure
   // that the generation works
-  TF1* fitFunc = new TF1("fitFunc", "[0]*sin(x)", 0, TMath::Pi());
+  TF1* fitFunc = new TF1("fitFunc", "[0]*(1+2*[1]*cos(2*x))", 0, 6);
   fitFunc->SetParameter(0, 10);
+  fitFunc->SetParameter(1,v2);
   fitFunc->SetLineColor(kRed);
   hPhi->Fit(fitFunc);
   
