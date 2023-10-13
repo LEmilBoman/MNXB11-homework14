@@ -10,6 +10,8 @@
 
 // include C++ STL headers 
 #include <iostream>
+// include C++ fstream for printing to file
+#include <fstream>
 
 using namespace std;
 
@@ -79,9 +81,21 @@ void rootfuncgenerate(Int_t nEvents, Int_t nTracks, Double_t v2)
   // Save the canvas as a picture
   c1->SaveAs("v2_rootfunc.jpg");
 
+  /*old loop. Keep for completness.
   // print to terminal
   cout << "nTracks " << nTracks << endl;
   for(Int_t i = 0; i < nTracks; i++) {
     cout << i << " : " << phi[i] << endl;
+  }*/
+  //open output file
+  ofstream outFile("phi_dist.dat");
+
+  //write to output file
+  outFile << "nTracks " << nTracks << endl;
+  for(Int_t i = 0; i < nTracks; i++) {
+    outFile << i << " : " << phi[i] << endl;
   }
+
+  //close output file
+  outFile.close();
 }
