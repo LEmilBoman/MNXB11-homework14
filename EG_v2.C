@@ -35,19 +35,23 @@ void rootfuncgenerate(Int_t nEvents, Int_t nTracks, Double_t v2)
 			100, 0, 6);
 
   // Define the function we want to generate
-  TF1* phiFunc = new TF1("phiFunc", "1+2*[0]*cos(2*x)", 0, 6);
+  TF1* phiFunc = new TF1("phiFunc", "1+2*[0]*cos(2*x)", 0, TMath::TwoPi());
   phiFunc->SetParameter(0,v2);
 
-  Double_t phi[nTracks]; //array for storing phi angles.
+  Double_t phi[nEvents][nTracks]; //array for storing phi angles.
 
   //generate nTracks phi angles
-  for (Int_t nt = 0; nt < nTracks; nt++) {
-    // generate random numbers to fill the array
-    phi[nt] = phiFunc->GetRandom();
+  for (Int_t nE = 0; nE < nEvents; nE++) {
+    for (Int_t nt = 0; nt < nTracks; nt++) {
+      // generate random numbers to fill the array
+      phi[nE][nt] = phiFunc->GetRandom();
+    }
   }
-
-  for(Int_t i = 0; i < nTracks; i++) {
-    hPhi->Fill(phi[i]);
+  
+  for (Int_t i = 0; i < nEvents; i++) {
+    for(Int_t j = 0; j < nTracks; j++) {
+      hPhi->Fill(phi[i][j]);
+    }
   }
   
   /*old loop. Keep for completeness
@@ -72,7 +76,7 @@ void rootfuncgenerate(Int_t nEvents, Int_t nTracks, Double_t v2)
   
   // create 1d function that we will use to fit our generated data to ensure
   // that the generation works
-  TF1* fitFunc = new TF1("fitFunc", "[0]*(1+2*[1]*cos(2*x))", 0, 6);
+  TF1* fitFunc = new TF1("fitFunc", "[0]*(1+2*[1]*cos(2*x))", 0, TMath::TwoPi());
   fitFunc->SetParameter(0, 10);
   fitFunc->SetParameter(1,v2);
   fitFunc->SetLineColor(kRed);
@@ -91,11 +95,13 @@ void rootfuncgenerate(Int_t nEvents, Int_t nTracks, Double_t v2)
   ofstream outFile("phi_dist.dat");
 
   //write to output file
-  outFile << "nTracks " << nTracks << endl;
-  for(Int_t i = 0; i < nTracks; i++) {
-    outFile << i << " : " << phi[i] << endl;
+  for (Int_t i = 0; i < nEvents; i++) {
+    outFile << "Event " << i << endl;
+    outFile << "nTracks " << nTracks << endl;
+    for(Int_t j = 0; j < nTracks; j++) {
+      outFile << j << " : " << phi[i][j] << endl;
+    }
   }
-
   //close output file
   outFile.close();
 }
